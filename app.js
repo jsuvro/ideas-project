@@ -1,9 +1,11 @@
 
 const express = require("express");
-const app = express();
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const app = express();
+
 
 const port = 3000 || process.env.PORT;
 
@@ -16,8 +18,7 @@ mongoose.connect("mongodb://localhost/VidIdeas")
 .catch(err => console.log(err));
 
 //load Idea model 
-require("./model/Ideas");
-const Idea = mongoose.model("ideas");
+const Idea = require("./model/Ideas");
 
 
 //setting up view engine way - one
@@ -33,6 +34,10 @@ app.set("view engine", "hbs");
 // Body parser middleware
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+//method-override middleware
+app.use(methodOverride("_method"));
+
 
 // setting up routes
 //home route
@@ -61,6 +66,7 @@ app.get("/ideas", (req, res) => {
 app.get("/ideas/add", (req, res) => {
     res.render("ideas/add");
 });
+
 
 //edit form route
 app.get("/ideas/:id/edit", (req, res) => {
@@ -106,6 +112,28 @@ app.post("/ideas", (req, res) => {
 });
 
 
+// edit form process 
+app.put("/ideas/:id", (req, res) => {
+    Idea.findOne({
+        _id: req.params.id
+    })
+    .then((idea) => {
+        idea.title = req.body.title,
+        idea.details = req.body.details
+
+        idea.save()
+        .then((idea) => {
+            res.redirect("/ideas");
+        })
+    })
+});
+
+app.delete("/ideas/:id", (req, res) => {
+    Idea.remove({_id: req.params.id})
+    .then(() => {
+        res.redirect("/ideas");
+    })
+});
 
 
 
