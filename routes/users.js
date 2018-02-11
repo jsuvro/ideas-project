@@ -26,33 +26,41 @@ router.post("/registration", (req, res) => {
     if (error.length > 0) {
         res.render("users/registration", {
             error:error,
-            username: req.body.username,
+            name: req.body.name,
             email: req.body.email,
             password: req.body.password,
             password2: req.body.password2
         });
     } else {
-        newUser = new User ({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password
-        });
-
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-                if (err) throw err;
-                newUser.password = hash;
-                newUser.save()
-                    .then(() => {
-                        req.flash("success_msg", "Registration successful!");
-                        res.redirect("/users/login");
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        res.redirect("/users/registration");
-                    })
-            });
-        });
+        User.findOne({email: req.body.email})
+            .then((user) => {
+                if (user) {
+                    req.flash("success_msg", "Email already registered");
+                    res.redirect("/users/registration");
+                } else {
+                    newUser = new User ({
+                        name: req.body.name,
+                        email: req.body.email,
+                        password: req.body.password
+                    });
+            
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(newUser.password, salt, (err, hash) => {
+                            if (err) throw err;
+                            newUser.password = hash;
+                            newUser.save()
+                                .then(() => {
+                                    req.flash("success_msg", "Registration successful!");
+                                    res.redirect("/users/login");
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    res.redirect("/users/registration");
+                                })
+                        });
+                    });
+                }
+            })    
 }  
 });
 
