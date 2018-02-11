@@ -1,0 +1,20 @@
+<form action="/users/registration" method="POST">
+    <div class="form-group">
+        <label for="text" name="username">Username</label>
+        <input type="text" class="form-control" name="username" value="{{username}}" required>
+    </div>
+    <div class="form-group">
+        <label for="email" name="email">Email</label>
+        <input type="email" class="form-control" name="email" value="{{email}}" required>
+    </div>
+    <div class="form-group">
+        <label for="password" name="password">Password</label>
+        <input type="password" class="form-control" name="password" value="{{password}}" required>
+    </div>
+    <div class="form-group">
+        <label for="password2" name="password2">Confirm Passowrd</label>
+        <input type="password" class="form-control" name="password2" value="{{password2}}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+
+</form>
