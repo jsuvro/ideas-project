@@ -1,4 +1,3 @@
-
 const express = require("express");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
@@ -128,6 +127,7 @@ app.put("/ideas/:id", (req, res) => {
     })
 });
 
+// delete route
 app.delete("/ideas/:id", (req, res) => {
     Idea.remove({_id: req.params.id})
     .then(() => {
